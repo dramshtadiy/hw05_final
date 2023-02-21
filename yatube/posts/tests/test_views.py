@@ -6,7 +6,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from ..forms import PostForm
-from ..models import Group, Post, Comment, Follow
+from ..models import Comment, Follow, Group, Post
 
 User = get_user_model()
 

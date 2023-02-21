@@ -15,23 +15,23 @@ class PostURLTest(TestCase):
     EDIT_REDIRECT_URL = '/auth/login/?next=/posts/1/edit/'
 
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         super().setUpClass()
         # автор тестовой записи
-        self.user = User.objects.create_user(username='auth')
+        cls.user = User.objects.create_user(username='auth')
         # просто зарегистрированный пользователь
-        self.second_user = User.objects.create_user(username='leo')
-        self.group = Group.objects.create(
+        cls.second_user = User.objects.create_user(username='leo')
+        cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='testslug',
             description='Для тестов',
         )
-        self.post = Post.objects.create(
-            author=self.user,
+        cls.post = Post.objects.create(
+            author=cls.user,
             text='Тест, тест, тест',
         )
-        self.POST_DETAIL_URL = '/posts/' + str(self.post.id) + '/'
-        self.POST_EDIT_URL = '/posts/' + str(self.post.id) + '/edit/'
+        cls.POST_DETAIL_URL = '/posts/' + str(cls.post.id) + '/'
+        cls.POST_EDIT_URL = '/posts/' + str(cls.post.id) + '/edit/'
 
     def setUp(self):
         self.guest_client = Client()
@@ -83,7 +83,7 @@ class PostURLTest(TestCase):
 
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
-        link_URLs_n_templates = {
+        linkurl = {
             self.INDEX_URL: 'posts/index.html',
             self.POST_DETAIL_URL: 'posts/post_detail.html',
             self.POST_EDIT_URL: 'posts/create_post.html',
@@ -91,7 +91,7 @@ class PostURLTest(TestCase):
             self.GROUP_LIST_URL: 'posts/group_list.html',
             self.USER_URL: 'posts/profile.html',
         }
-        for adress, template in link_URLs_n_templates.items():
+        for adress, template in linkurl.items():
             with self.subTest(adress=adress):
                 response = self.authorized_client.get(adress)
                 self.assertTemplateUsed(response, template)
