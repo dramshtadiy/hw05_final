@@ -1,14 +1,17 @@
 from http import HTTPStatus
-
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+import shutil
+import tempfile
 
 from ..forms import PostForm
 from ..models import Group, Post
 
 User = get_user_model()
+TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
 class PostFormTests(TestCase):
@@ -28,6 +31,11 @@ class PostFormTests(TestCase):
             text='Тексттт',
         )
         cls.form = PostForm()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
         self.user = User.objects.create(username='NoName')
