@@ -1,12 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator
 
 from .forms import PostForm, CommentForm
 from .models import Group, Post, Comment, Follow
 from .utils import paginate
 
 User = get_user_model()
+COUNT_10 = 10
 
 
 def index(request):
@@ -110,7 +112,9 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(author__following__user=request.user)
-    page_obj = paginate(request, posts)
+    paginator = Paginator(posts, COUNT_10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
         'page_obj': page_obj,
         'title': 'Избранные посты',
