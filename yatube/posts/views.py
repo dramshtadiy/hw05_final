@@ -34,7 +34,10 @@ def profile(request, username):
     posts = author.posts.all()
     post_count = posts.count()
     page_obj = paginate(request, posts)
-    following = author.following.exists()
+    following = False
+    if request.user.is_authenticated:
+        if Follow.objects.filter(user=request.user, author=author).exists():
+            following = True
     context = {
         'page_obj': page_obj,
         'author': author,
@@ -113,7 +116,6 @@ def follow_index(request):
     page_obj = paginate(request, posts)
     context = {
         'page_obj': page_obj,
-        'title': 'Избранные посты',
     }
     return render(request, 'posts/follow.html', context)
 
